@@ -1,0 +1,8 @@
+App\Entity\Game:
+  game{1..10}:
+    name: Minecraft <current()>
+    publisher: Test
+    developpers: Test
+    image: https://www.net-aware.org.uk/siteassets/images-and-icons/application-icons/app-icon-minecraft.png?w=585&scale=down
+    platform: PC
+    category: Action
