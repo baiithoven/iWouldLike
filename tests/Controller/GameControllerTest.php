@@ -6,12 +6,14 @@ namespace App\Tests\Controller;
 
 use App\Entity\Game;
 use App\Repository\GameRepository;
+use Liip\TestFixturesBundle\Test\FixturesTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class GameControllerTest extends WebTestCase
 {
+    use FixturesTrait;
     /**
      * @var KernelBrowser
      */
@@ -24,6 +26,7 @@ class GameControllerTest extends WebTestCase
 
     private function getVideoGameFromRepo(): Game
     {
+        $this->loadFixtureFiles([__DIR__ . '/../fixtures/games.yaml']);
         return self::$container->get(GameRepository::class)->findOneBy([]);
     }
 
@@ -41,12 +44,14 @@ class GameControllerTest extends WebTestCase
 
     public function testFetchVideoGames()
     {
+        $this->loadFixtureFiles([__DIR__ . '/../fixtures/games.yaml']);
         $this->client->request('GET', '/game');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
     public function testFetchOneVideoGame()
     {
+        $this->loadFixtureFiles([__DIR__ . '/../fixtures/games.yaml']);
         $game = $this->getVideoGameFromRepo();
         $this->client->request('GET', "/game/{$game->getId()}");
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
@@ -60,6 +65,7 @@ class GameControllerTest extends WebTestCase
 
     public function testUpdateOneVideoGame()
     {
+        $this->loadFixtureFiles([__DIR__ . '/../fixtures/games.yaml']);
         $game = $this->getVideoGameFromRepo();
         $gameUpdate = $this->getVideoGameToPost();
         $gameUpdate['publisher'] = 'Microsoft';
@@ -69,8 +75,15 @@ class GameControllerTest extends WebTestCase
 
     public function testDeleteOneVideoGame()
     {
+        $this->loadFixtureFiles([__DIR__ . '/../fixtures/games.yaml']);
         $game = $this->getVideoGameFromRepo();
         $this->client->request('DELETE', "/game/{$game->getId()}");
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    public function testGet404IfGameDoesntExist()
+    {
+        $this->client->request('GET', '/game/1');
+        $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 }
