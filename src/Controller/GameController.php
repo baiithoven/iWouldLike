@@ -45,14 +45,12 @@ class GameController extends AbstractController
      *
      * @param int $id
      * @param GameRepository $gameRepository
+     * @param SerializerInterface $serializer
+     * @return Response
      */
-    public function fetch(int $id, GameRepository $gameRepository)
+    public function fetch(int $id, GameRepository $gameRepository, SerializerInterface $serializer)
     {
         $game = $gameRepository->find($id);
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-
-        $serializer = new Serializer($normalizers, $encoders);
 
         if(!$game)
         {
