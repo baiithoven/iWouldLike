@@ -11,12 +11,37 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
+
+/**
+ * Class GameController
+ * @package App\Controller
+ * @Route ("/api")
+ */
 class GameController extends AbstractController
 {
+
+
     /**
      * @Route("/game", name="game", methods={"POST"})
      *
+     * @SWG\Post(
+     *      @SWG\Parameter(
+     *          name="body",
+     *          in="body",
+     *          description="",
+     *          required=true,
+     *          format="application/json",
+     *          @Model(type=Game::class)
+     *      ),
+     *     @SWG\Response(
+     *     response=200,
+     *     description=""
+     * )
+     *
+     * )
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -45,7 +70,11 @@ class GameController extends AbstractController
 
     /**
      * @Route ("/game/{id}", name="game_show", methods={"GET"})
-     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="",
+     *     @Model(type=Game::class)
+     * )
      * @param int $id
      * @param GameRepository $gameRepository
      * @param SerializerInterface $serializer
@@ -130,8 +159,7 @@ class GameController extends AbstractController
             ->setCategory($gameEdit->getCategory())
             ->setDeveloppers($gameEdit->getDeveloppers())
             ->setPlatform($gameEdit->getPlatform())
-            ->setImage($gameEdit->getImage())
-        ;
+            ->setImage($gameEdit->getImage());
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Edited game with id ' . $id]);
